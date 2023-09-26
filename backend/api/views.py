@@ -65,10 +65,9 @@ def getTask(request, task_id):
 
 
 @api_view(['GET'])
-def getTasks(request, user_id):
+def getTasks(request, profile_id):
     try:
-        user = User.objects.get(id=user_id)
-        profile = Profile.objects.get(user=user)
+        profile = Profile.objects.get(id=profile_id)
         tasks = Task.objects.filter(profile=profile)
 
         if tasks.exists():
@@ -104,6 +103,7 @@ def createTask(request, profile_id):
 
 @api_view(['PUT'])
 def changeStatus(request, task_id):
+    print(task_id)
     try:
         task = Task.objects.get(id=task_id)
 
