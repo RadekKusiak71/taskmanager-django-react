@@ -52,8 +52,4 @@ You can use the following test user to log in:
 ![Create Task Panel](https://github.com/RadekKusiak71/taskmanager-django-react/assets/121208184/bf2ce853-a9ab-4fd8-98d3-748c56fd0a6f)
 
 Feel free to explore and use the application with the provided test user credentials.
-
-That's it! You should now have the Task Manager application up and running on your local machine. Enjoy managing your tasks!
 ```
-
-You can copy and paste this code into your README.md file. Make sure to replace the image URLs with the actual URLs of your screenshots if they are hosted online.
