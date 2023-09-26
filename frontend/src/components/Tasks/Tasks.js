@@ -101,7 +101,7 @@ const Tasks = () => {
       <div>
         <h2>Your tasks:</h2>
         {tasks.map((task) => (
-          <div className={classes['task-dashboard']}>
+          <div key={task.id} className={classes['task-dashboard']}>
             <h1>{task.title} - {task.completed ? (
               <>
                 <span className={classes.completed}>Completed</span>
