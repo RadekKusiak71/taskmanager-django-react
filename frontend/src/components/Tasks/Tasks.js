@@ -112,7 +112,7 @@ const Tasks = () => {
               </>
             )} </h1>
             <h2>{task.date}</h2>
-            <p>{task.body}</p>
+            <p className={classes['dashboard-task-body']}>{task.body}</p>
             <button className={classes.statusButton} type='button' onClick={() => changeStatus(task.id)}>change status</button>
           </div>
         ))}
