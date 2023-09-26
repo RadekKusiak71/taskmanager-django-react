@@ -23,7 +23,7 @@ const logoutHandler = () => {
     <nav className={classes.menu}>
       {logged ? (
         <React.Fragment>
-          <NavLink to='/'>Dashboard</NavLink>
+          <NavLink to='/tasks'>Dashboard</NavLink>
           <NavLink to='/completed'>Completed</NavLink>
           <NavLink to='/uncompleted'>Uncompleted</NavLink>
           <NavLink to='/create-task'>Create Task</NavLink>

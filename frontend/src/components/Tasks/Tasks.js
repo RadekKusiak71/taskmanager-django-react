@@ -26,7 +26,7 @@ const Tasks = () => {
         .then((res) => {
           if (!res.ok) {
             // Handle non-successful response (e.g., 404 Not Found)
-            throw new Error(`HTTP error! Status: ${res.status}`);
+            throw new Error('Tasks not found');
           }
           return res.json(); // Parse JSON if response is successful
         })
@@ -63,10 +63,9 @@ const Tasks = () => {
           })
             .then((res) => {
               if (!res.ok) {
-                // Handle non-successful response (e.g., 404 Not Found)
                 throw new Error(`HTTP error! Status: ${res.status}`);
               }
-              return res.json(); // Parse JSON if response is successful
+              return res.json();
             })
             .then((data) => {
               let responseData = Object.values(data)

@@ -15,7 +15,7 @@ function App() {
       <div className='main-container'>
         <Header />
         <Routes>
-          <Route path='/' element={<Tasks />} />
+          <Route path='/tasks' element={<Tasks />} />
           <Route path='/completed' element={<TasksCompleted />} />
           <Route path='/uncompleted' element={<TaskUncompleted />} />
           <Route path='/create-task' element={<TaskForm />} />
