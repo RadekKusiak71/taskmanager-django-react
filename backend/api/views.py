@@ -34,7 +34,8 @@ def getTasks(request, user_id):
 
     except Profile.DoesNotExist:
         return Response({'message': 'Profile not found...'}, status=status.HTTP_404_NOT_FOUND)
-    
+
+
 @api_view(['POST'])
 def createTask(request, profile_id):
     if request.method == 'POST':
@@ -49,5 +50,36 @@ def createTask(request, profile_id):
                 return Response({'message': 'Both title and body are required'}, status=status.HTTP_400_BAD_REQUEST)
         except Profile.DoesNotExist:
             return Response({'message': 'Your profile doesn\'t exist anymore...'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response({'error': 'Invalid request method. This API endpoint only supports POST requests.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def registerAuth(request):
+    if request.method == 'POST':
+        username = request.data.get('username')
+        password = request.data.get('password')
+        password_confirm = request.data.get('password_confirm')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+
+        if not all([username, first_name, last_name, password, password_confirm]):
+            return Response({'message': 'All inputs are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(username) < 8:
+            return Response({'message': 'Username must be 8 characters or more.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if password != password_confirm:
+            return Response({'message': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if User.objects.filter(username=username).exists():
+            return Response({'message': 'Username is already in use.'}, status=status.HTTP_409_CONFLICT)
+
+        user = User.objects.create_user(
+            username=username, password=password, first_name=first_name, last_name=last_name)
+        profile = Profile.objects.create(
+            user=user, first_name=first_name, last_name=last_name)
+
+        return Response({'message': 'Registration successful.'}, status=status.HTTP_201_CREATED)
     else:
         return Response({'error': 'Invalid request method. This API endpoint only supports POST requests.'}, status=status.HTTP_400_BAD_REQUEST)
