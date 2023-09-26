@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import classes from './Menu.module.css';
+
 const Menu = () => {
   const navigate = useNavigate()
   const authStatus = localStorage.getItem('auth');
