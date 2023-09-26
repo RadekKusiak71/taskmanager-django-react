@@ -5,7 +5,6 @@ import Header from './components/Header/Header'
 import Login from './components/Authentication/Login'
 import Register from './components/Authentication/Register'
 import Tasks from './components/Tasks/Tasks'
-import Task from "./components/Tasks/Task";
 import TasksCompleted from "./components/Tasks/TasksCompleted";
 import TaskUncompleted from "./components/Tasks/TasksUncompleted";
 import TaskForm from './components/Tasks/TaskForm';
@@ -17,7 +16,6 @@ function App() {
         <Header />
         <Routes>
           <Route path='/' element={<Tasks />} />
-          <Route path='/task' element={<Task />} />
           <Route path='/completed' element={<TasksCompleted />} />
           <Route path='/uncompleted' element={<TaskUncompleted />} />
           <Route path='/create-task' element={<TaskForm />} />
