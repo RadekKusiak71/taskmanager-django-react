@@ -85,6 +85,7 @@ const Register = () => {
 
                 if (response.ok) {
                     localStorage.setItem('profile_id', data.profile_id);
+                    localStorage.setItem('username', data.username);
                     localStorage.setItem('auth', true);
                     console.log(data.message);
                     navigate("/");

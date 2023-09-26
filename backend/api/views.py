@@ -37,7 +37,8 @@ def getCompletedTasks(request, profile_id):
             return Response({'message': 'No completed tasks found for this profile.'}, status=status.HTTP_404_NOT_FOUND)
     except Profile.DoesNotExist:
         return Response({'message': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
-    
+
+
 @api_view(['GET'])
 def getUncompletedTasks(request, profile_id):
     try:
@@ -132,7 +133,7 @@ def loginAuth(request):
         if user is not None:
             try:
                 profile = Profile.objects.get(user=user)
-                return Response({'message': 'Login success', 'profile_id': profile.id}, status=status.HTTP_200_OK)
+                return Response({'message': 'Login success', 'profile_id': profile.id, 'username': username}, status=status.HTTP_200_OK)
             except Profile.DoesNotExist:
                 return Response({'message': 'Profile doesn\'t exist'}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -167,6 +168,6 @@ def registerAuth(request):
         profile = Profile.objects.create(
             user=user, first_name=first_name, last_name=last_name)
 
-        return Response({'message': 'Registration successful.', 'profile_id': profile.id}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Registration successful.', 'profile_id': profile.id, 'username': username}, status=status.HTTP_201_CREATED)
     else:
         return Response({'error': 'Invalid request method. This API endpoint only supports POST requests.'}, status=status.HTTP_400_BAD_REQUEST)

@@ -56,6 +56,7 @@ const Login = () => {
                 const data = await response.json()
                 if(response.ok){
                     localStorage.setItem('profile_id', data.profile_id);
+                    localStorage.setItem('username', data.username);
                     localStorage.setItem('auth', true);
                     console.log(response.message)
                     navigate("/")
