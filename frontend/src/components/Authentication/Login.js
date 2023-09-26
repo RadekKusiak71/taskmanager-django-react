@@ -3,17 +3,20 @@ import FormBox from '../UI/FormBox'
 import Card from '../UI/Card'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
+import { useNavigate } from 'react-router-dom'
 
 
 
 const Login = () => {
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         username: '',
         password: ''
     })
     const [formErrors, setFormErrors] = useState({
         username: '',
-        password: ''
+        password: '',
+        message: '',
     })
 
     const handleChange = (e) => {
@@ -39,10 +42,32 @@ const Login = () => {
         setFormErrors(errors);
         return isValid;
     }
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault()
         if (validateForm()) {
-            console.log('Registration successful');
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                const data = await response.json()
+                if(response.ok){
+                    localStorage.setItem('profile_id', data.profile_id);
+                    localStorage.setItem('auth', true);
+                    console.log(response.message)
+                    navigate("/")
+                }else{
+                    let errors = {};
+                    errors.message = data.message
+                    setFormErrors(errors)
+                    console.log(data.message)
+                }
+            } catch (err) {
+                console.log('Something went wrong', err)
+            }
         }
     }
 
@@ -57,6 +82,9 @@ const Login = () => {
                 <Input onChange={handleChange} type='password' id='password' name='password' placeholder='Password' value={formData.password} />
                 {formErrors.password && (
                     <div className='error-message'>{formErrors.password}</div>
+                )}
+                {formErrors.message && (
+                    <div className='error-message'>{formErrors.message}</div>
                 )}
                 <Button type={'submit'}>Login</Button>
             </FormBox>

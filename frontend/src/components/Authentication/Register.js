@@ -3,14 +3,16 @@ import Card from '../UI/Card';
 import FormBox from '../UI/FormBox';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         firstname: '',
         lastname: '',
         password: '',
-        passwordConfirm: '',
+        password_confirm: '',
     });
 
     const [formErrors, setFormErrors] = useState({
@@ -18,7 +20,8 @@ const Register = () => {
         firstname: '',
         lastname: '',
         password: '',
-        passwordConfirm: '',
+        password_confirm: '',
+        message: '',
     });
 
     const handleChange = (e) => {
@@ -32,10 +35,12 @@ const Register = () => {
     const validateForm = () => {
         let errors = {};
         let isValid = true;
-
-        // Validation rules (you can customize these)
         if (formData.username.trim() === '') {
             errors.username = 'Username is required';
+            isValid = false;
+        }
+        if (formData.username.length < 8) {
+            errors.username = 'Username must be at least 8 characters';
             isValid = false;
         }
 
@@ -54,8 +59,8 @@ const Register = () => {
             isValid = false;
         }
 
-        if (formData.password !== formData.passwordConfirm) {
-            errors.passwordConfirm = 'Passwords do not match';
+        if (formData.password !== formData.password_confirm) {
+            errors.password_confirm = 'Passwords do not match';
             isValid = false;
         }
 
@@ -63,86 +68,111 @@ const Register = () => {
         return isValid;
     };
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
 
         if (validateForm()) {
-            console.log('Registration successful');
-            //api call
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('profile_id', data.profile_id);
+                    localStorage.setItem('auth', true);
+                    console.log(data.message);
+                    navigate("/");
+                } else {
+                    let errors = {};
+                    errors.message = data.message;
+                    setFormErrors(errors);
+                    console.log(data.message);
+                }
+            } catch (err) {
+                console.log('Something went wrong', err);
+            }
         }
     };
+        return(
+            <Card>
+                <FormBox
+                    form-text={'You have an account already? Login'}
+                    path={'/login'}
+                    onSubmit={submitHandler}
+                    method='POST'
+                >
+                    <Input
+                        onChange={handleChange}
+                        type='text'
+                        id='username'
+                        name='username'
+                        placeholder='Username'
+                        value={formData.username}
+                    />
+                    {formErrors.username && (
+                        <div className='error-message'>{formErrors.username}</div>
+                    )}
 
-    return (
-        <Card>
-            <FormBox
-                form-text={'You have an account already? Login'}
-                path={'/login'}
-                onSubmit={submitHandler}
-            >
-                <Input
-                    onChange={handleChange}
-                    type='text'
-                    id='username'
-                    name='username'
-                    placeholder='Username'
-                    value={formData.username}
-                />
-                {formErrors.username && (
-                    <div className='error-message'>{formErrors.username}</div>
-                )}
+                    <Input
+                        onChange={handleChange}
+                        type='text'
+                        id='first_name'
+                        name='firstname'
+                        placeholder='First name'
+                        value={formData.firstname}
+                    />
+                    {formErrors.firstname && (
+                        <div className='error-message'>{formErrors.firstname}</div>
+                    )}
 
-                <Input
-                    onChange={handleChange}
-                    type='text'
-                    id='first_name'
-                    name='firstname'
-                    placeholder='First name'
-                    value={formData.firstname}
-                />
-                {formErrors.firstname && (
-                    <div className='error-message'>{formErrors.firstname}</div>
-                )}
+                    <Input
+                        onChange={handleChange}
+                        type='text'
+                        id='last_name'
+                        name='lastname'
+                        placeholder='Last name'
+                        value={formData.lastname}
+                    />
+                    {formErrors.lastname && (
+                        <div className='error-message'>{formErrors.lastname}</div>
+                    )}
 
-                <Input
-                    onChange={handleChange}
-                    type='text'
-                    id='last_name'
-                    name='lastname'
-                    placeholder='Last name'
-                    value={formData.lastname}
-                />
-                {formErrors.lastname && (
-                    <div className='error-message'>{formErrors.lastname}</div>
-                )}
+                    <Input
+                        onChange={handleChange}
+                        type='password'
+                        id='password'
+                        name='password'
+                        placeholder='Password'
+                        value={formData.password}
+                    />
+                    {formErrors.password && (
+                        <div className='error-message'>{formErrors.password}</div>
+                    )}
 
-                <Input
-                    onChange={handleChange}
-                    type='password'
-                    id='password'
-                    name='password'
-                    placeholder='Password'
-                    value={formData.password}
-                />
-                {formErrors.password && (
-                    <div className='error-message'>{formErrors.password}</div>
-                )}
-
-                <Input
-                    onChange={handleChange}
-                    type='password'
-                    id='password_confirm'
-                    name='passwordConfirm'
-                    placeholder='Re-type password'
-                    value={formData.passwordConfirm}
-                />
-                {formErrors.passwordConfirm && (
-                    <div className='error-message'>{formErrors.passwordConfirm}</div>
-                )}
-
-                <Button type={'submit'}>Register</Button>
-            </FormBox>
-        </Card>
-    );
+                    <Input
+                        onChange={handleChange}
+                        type='password'
+                        id='password_confirm'
+                        name='password_confirm'
+                        placeholder='Re-type password'
+                        value={formData.password_confirm}
+                    />
+                    {formErrors.password_confirm && (
+                        <div className='error-message'>{formErrors.password_confirm}</div>
+                    )}
+                    {formErrors.message && (
+                        <div className='error-message'>{formErrors.message}</div>
+                    )}
+                    <Button type={'submit'}>Register</Button>
+                </FormBox>
+            </Card>
+        );
 };
 
 export default Register;
