@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import classes from './Tasks.module.css'
 import Wrapper from '../UI/Wrapper'
-import { useNavigate } from 'react-router-dom'
 
 const Tasks = () => {
-  const navigate = useNavigate()
   const [tasks, setTasks] = useState([])
   const [message, setMessage] = useState('')
   const username = localStorage.getItem('username')
@@ -44,7 +42,7 @@ const Tasks = () => {
       console.log('Error', err);
       setMessage(err.message);
     }
-  }, []);
+  }, [profile_id]);
 
   const changeStatus = async (id) => {
     try {

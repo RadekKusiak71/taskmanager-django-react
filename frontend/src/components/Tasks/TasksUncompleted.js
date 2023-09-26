@@ -41,7 +41,7 @@ const TasksCompleted = () => {
     } catch (err) {
       console.log('Something went wrong...', err)
     }
-  }, [])
+  }, [profile_id])
 
 
   const handleStatusChange = async (id) => {
