@@ -9,7 +9,6 @@ const Menu = () => {
       <NavLink to='/completed'>Completed</NavLink>
       <NavLink to='/uncompleted'>Uncompleted</NavLink>
       <NavLink to='/create-task'>Create Task</NavLink>
-      <NavLink to='/tasks'>Tasks</NavLink>
       <NavLink to='/logout'>Logout</NavLink>
       <NavLink to='/login'>Login</NavLink>
       <NavLink to='/register'>Register</NavLink>
