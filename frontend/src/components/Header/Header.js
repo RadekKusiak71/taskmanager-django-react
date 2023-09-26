@@ -1,9 +1,12 @@
 import React from 'react'
 import classes from './Header.module.css'
+import Menu from './Menu'
 
 const Header = () => {
   return (
-    <div>Header</div>
+    <div className={classes.header}>
+      <Menu/>
+    </div>
   )
 }
 
