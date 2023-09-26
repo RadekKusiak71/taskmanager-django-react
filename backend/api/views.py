@@ -147,8 +147,8 @@ def registerAuth(request):
         username = request.data.get('username')
         password = request.data.get('password')
         password_confirm = request.data.get('password_confirm')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
+        first_name = request.data.get('firstname')
+        last_name = request.data.get('lastname')
 
         if not all([username, first_name, last_name, password, password_confirm]):
             return Response({'message': 'All inputs are required.'}, status=status.HTTP_400_BAD_REQUEST)
