@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 from .models import Task, Profile
 from .serializers import TaskSerializer, ProfileSerializer
@@ -53,6 +54,45 @@ def createTask(request, profile_id):
     else:
         return Response({'error': 'Invalid request method. This API endpoint only supports POST requests.'}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['PUT'])
+def changeStatus(request, task_id):
+    try:
+        task = Task.objects.get(id=task_id)
+        
+        if task.completed:
+            task.completed = False
+            task.save()
+            return Response({'message': 'Task status changed from completed to uncompleted'}, status=status.HTTP_200_OK)
+        else:
+            task.completed = True
+            task.save()
+            return Response({'message': 'Task status changed from uncompleted to completed'}, status=status.HTTP_200_OK)
+    except Task.DoesNotExist:
+        return Response({'message': 'Task doesn\'t exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def loginAuth(request):
+    if request.method == 'POST':
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        if not all([username, password]):
+            return Response({'message': 'Both username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            try:
+                profile = Profile.objects.get(user=user)
+                return Response({'message': 'Login success', 'profile_id': profile.id}, status=status.HTTP_200_OK)
+            except Profile.DoesNotExist:
+                return Response({'message': 'Profile doesn\'t exist'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({'message': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        return Response({'error': 'Invalid request method. This API endpoint only supports POST requests.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def registerAuth(request):
@@ -80,6 +120,6 @@ def registerAuth(request):
         profile = Profile.objects.create(
             user=user, first_name=first_name, last_name=last_name)
 
-        return Response({'message': 'Registration successful.'}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Registration successful.', 'profile_id': profile.id}, status=status.HTTP_201_CREATED)
     else:
         return Response({'error': 'Invalid request method. This API endpoint only supports POST requests.'}, status=status.HTTP_400_BAD_REQUEST)
