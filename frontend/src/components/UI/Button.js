@@ -6,8 +6,7 @@ const Button = (props) => {
     <button
         type={props.type}
         disabled={props.disabled}
-        className={classes.button}
-    >
+        className={classes.button}>
         {props.children}
     </button>
   )
