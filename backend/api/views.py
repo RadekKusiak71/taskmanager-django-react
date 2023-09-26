@@ -12,9 +12,55 @@ from .serializers import TaskSerializer, ProfileSerializer
 @api_view(['GET'])
 def getOverview(request):
     data = {
-        'api state': True
+        'task/{id_of_task}': 'get a single task by id (GET)',
+        'tasks/{id_of_user}': 'get a all tasks for user',
+        'tasks/uncompleted/{id_of_user}': 'get a uncompleted tasks for user',
+        'tasks/completed/{id_of_user}': 'get a completed tasks for user',
+        'createTask/': 'create task api (POST)',
+        'taskStatus/{id_of_task}': 'change status of task (PUT)',
+        'register/': 'register api (POST)',
+        'login/': 'login api (POST)',
     }
     return Response(data)
+
+
+@api_view(['GET'])
+def getCompletedTasks(request, profile_id):
+    try:
+        profile = Profile.objects.get(id=profile_id)
+        tasks = Task.objects.filter(profile=profile, completed=True)
+
+        if tasks.exists():
+            tasks_serialized = TaskSerializer(tasks, many=True)
+            return Response(tasks_serialized.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'No completed tasks found for this profile.'}, status=status.HTTP_404_NOT_FOUND)
+    except Profile.DoesNotExist:
+        return Response({'message': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+def getUncompletedTasks(request, profile_id):
+    try:
+        profile = Profile.objects.get(id=profile_id)
+        tasks = Task.objects.filter(profile=profile, completed=False)
+
+        if tasks.exists():
+            tasks_serialized = TaskSerializer(tasks, many=True)
+            return Response(tasks_serialized.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'No uncompleted tasks found for this profile.'}, status=status.HTTP_404_NOT_FOUND)
+    except Profile.DoesNotExist:
+        return Response({'message': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def getTask(request, task_id):
+    try:
+        task = Task.objects.get(id=task_id)
+        task_serialized = TaskSerializer(task, many=False)
+        return Response(task_serialized.data)
+    except Task.DoesNotExist:
+        return Response({'message': 'Task doesnt exists...'}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['GET'])
@@ -54,11 +100,12 @@ def createTask(request, profile_id):
     else:
         return Response({'error': 'Invalid request method. This API endpoint only supports POST requests.'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['PUT'])
 def changeStatus(request, task_id):
     try:
         task = Task.objects.get(id=task_id)
-        
+
         if task.completed:
             task.completed = False
             task.save()
@@ -76,12 +123,12 @@ def loginAuth(request):
     if request.method == 'POST':
         username = request.data.get('username')
         password = request.data.get('password')
-        
+
         if not all([username, password]):
             return Response({'message': 'Both username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         user = authenticate(request, username=username, password=password)
-        
+
         if user is not None:
             try:
                 profile = Profile.objects.get(user=user)
