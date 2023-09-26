@@ -34,6 +34,9 @@ You can use the following test user to log in:
 - **Username**: TestUser1
 - **Password**: !QAZ2wsx12
 
+- **Username**: admin
+- **Password**: !QAZ2wsx12
+
 ## Screenshots
 
 ### Register Panel
